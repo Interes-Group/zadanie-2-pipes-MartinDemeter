@@ -11,7 +11,7 @@ public class Game {
     public Game() {
         JFrame frame = new JFrame("Water Pipes!");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(700,790);
+        frame.setSize(800,890);
         frame.getContentPane().setBackground(Color.ORANGE);
         frame.setResizable(false);
         frame.setFocusable(true);
@@ -44,7 +44,7 @@ public class Game {
         slider.setPaintLabels(true);
         slider.addChangeListener(logic);
 
-
+        upMenu.setLayout(new GridLayout(1,2));
         upMenu.add(logic.getLevelLabel());
         upMenu.add(logic.getBoardSizeLabel());
         frame.add(upMenu, BorderLayout.PAGE_START);

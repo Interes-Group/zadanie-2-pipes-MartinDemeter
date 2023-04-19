@@ -18,6 +18,8 @@ public class GameLogic extends UniversalAdapter {
 
     private Board currentBoard;
 
+    private int counter;
+
     @Getter
     private JLabel levelLabel;
 
@@ -25,25 +27,30 @@ public class GameLogic extends UniversalAdapter {
     private JLabel boardSizeLabel;
 
     private int currentBoardSize;
+
     public GameLogic(JFrame mainGame) {
         this.mainGame = mainGame;
         this.currentBoardSize = INITIAL_BOARD_SIZE;
         this.initializeNewBoard(this.currentBoardSize);
         this.mainGame.add(this.currentBoard);
+        this.counter = 0;
         this.levelLabel = new JLabel();
         this.boardSizeLabel = new JLabel();
-//        this.updateLevelLabel();
+        this.updateLevelLabel();
         this.updateBoardSizeLabel();
     }
 
-//    private void updateLevelLabel() {
-//        this.levelLabel.setText("asafasf");
-//    }
+    private void updateLevelLabel() {
+        this.levelLabel.setText("LEVEL: " + this.counter);
+    }
 
     private void updateBoardSizeLabel() {
-        this.boardSizeLabel.setText("CURRENT BOARD SIZE: " + this.currentBoardSize);
-        this.mainGame.revalidate();
-        this.mainGame.repaint();
+        if (this.currentBoardSize % 2 == 0) {
+            this.boardSizeLabel.setText("CURRENT BOARD SIZE: " + this.currentBoardSize);
+            this.mainGame.revalidate();
+            this.mainGame.repaint();
+
+        }
     }
 
     private void initializeNewBoard(int dimension) {
@@ -53,14 +60,16 @@ public class GameLogic extends UniversalAdapter {
     }
 
     private void gameRestart() {
-        this.mainGame.remove(this.currentBoard);
-        this.initializeNewBoard(this.currentBoardSize);
-        this.mainGame.add(this.currentBoard);
-//        this.updateNameLabel();
-        this.mainGame.revalidate();
-        this.mainGame.repaint();
-        this.mainGame.setFocusable(true);
-        this.mainGame.requestFocus();
+        if (this.currentBoardSize % 2 == 0) {
+            this.mainGame.remove(this.currentBoard);
+            this.initializeNewBoard(this.currentBoardSize);
+            this.mainGame.add(this.currentBoard);
+            this.updateLevelLabel();
+            this.mainGame.revalidate();
+            this.mainGame.repaint();
+            this.mainGame.setFocusable(true);
+            this.mainGame.requestFocus();
+        }
     }
 
     @Override
@@ -70,29 +79,52 @@ public class GameLogic extends UniversalAdapter {
 //        this.mainGame.repaint();
 //        this.mainGame.setFocusable(true);
 //        this.mainGame.requestFocus();
+
     }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        Component current = this.currentBoard.getComponentAt(e.getX(), e.getY());
+        if (!(current instanceof Tile)) {
+            return;
+        } else {
+            ((Tile) current).rotate();
+        }
+        this.currentBoard.repaint();
+    }
+
+
 
     @Override
     public void mouseMoved(MouseEvent e) {
         Component current = this.currentBoard.getComponentAt(e.getX(), e.getY());
         if (!(current instanceof Tile)) {
             return;
+        } else {
+            ((Tile) current).setHighlight(true);
         }
-
-        ((Tile) current).setHighlight(true);
 
         this.currentBoard.repaint();
     }
 
+
+
+
     @Override
     public void stateChanged(ChangeEvent e) {
-        this.currentBoardSize = ((JSlider) e.getSource()).getValue();
+        int newSize = ((JSlider) e.getSource()).getValue();
+        if (newSize != this.currentBoardSize) {
+            this.currentBoardSize = newSize;
+            this.gameRestart();
+        }
         this.updateBoardSizeLabel();
-        this.gameRestart();
+
+
 //        this.mainGame.revalidate();
 //        this.mainGame.repaint();
 //        this.mainGame.setFocusable(true);
 //        this.mainGame.requestFocus();
+
     }
 
     @Override
