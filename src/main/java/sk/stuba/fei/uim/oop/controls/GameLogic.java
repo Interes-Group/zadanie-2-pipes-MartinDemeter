@@ -2,7 +2,7 @@ package sk.stuba.fei.uim.oop.controls;
 
 import lombok.Getter;
 import sk.stuba.fei.uim.oop.board.Board;
-import sk.stuba.fei.uim.oop.board.Tile;
+import sk.stuba.fei.uim.oop.board.TileI;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -85,10 +85,10 @@ public class GameLogic extends UniversalAdapter {
     @Override
     public void mousePressed(MouseEvent e) {
         Component current = this.currentBoard.getComponentAt(e.getX(), e.getY());
-        if (!(current instanceof Tile)) {
+        if (!(current instanceof TileI)) {
             return;
         } else {
-            ((Tile) current).rotate();
+            ((TileI) current).rotate();
         }
         this.currentBoard.repaint();
     }
@@ -98,10 +98,10 @@ public class GameLogic extends UniversalAdapter {
     @Override
     public void mouseMoved(MouseEvent e) {
         Component current = this.currentBoard.getComponentAt(e.getX(), e.getY());
-        if (!(current instanceof Tile)) {
+        if (!(current instanceof TileI)) {
             return;
         } else {
-            ((Tile) current).setHighlight(true);
+            ((TileI) current).setHighlight(true);
         }
 
         this.currentBoard.repaint();

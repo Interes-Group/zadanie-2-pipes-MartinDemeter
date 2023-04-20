@@ -7,9 +7,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
-public class Tile extends JPanel {
+public class TileI extends JPanel {
 
     @Setter
     private boolean highlight;
@@ -33,7 +34,7 @@ public class Tile extends JPanel {
 
     private Step previousStep;
     JLabel label;
-    public Tile() {
+    public TileI() {
         this.finish = false;
         this.playable = false;
         this.orientation = 0;
@@ -63,17 +64,17 @@ public class Tile extends JPanel {
         }
     }
 
-    public void addNeighbour(Direction direction, Tile tile) {
+    public void addNeighbour(Direction direction, TileI tile) {
         this.neighbours.put(direction, new Connection(tile));
     }
 
-    public ArrayList<Tile> getAllNeighbour() {
-        ArrayList<Tile> all = new ArrayList<>();
+    public ArrayList<TileI> getAllNeighbour() {
+        ArrayList<TileI> all = new ArrayList<>();
         this.neighbours.values().forEach(connection -> all.add(connection.getTile()));
         return all;
     }
 
-    public void connectWith(Tile node) {
+    public void connectWith(TileI node) {
         for (Map.Entry<Direction, Connection> entry : this.neighbours.entrySet()) {
             if (entry.getValue().getTile() != node) {
                 continue;
@@ -83,6 +84,19 @@ public class Tile extends JPanel {
                 node.connectWith(this);
             }
             return;
+        }
+    }
+
+//
+
+
+    public void removeNoConnected() {
+        Iterator<Map.Entry<Direction, Connection>> iterator = this.neighbours.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Direction, Connection> entry = iterator.next();
+            if (!entry.getValue().isConnected()) {
+                iterator.remove();
+            }
         }
     }
 
@@ -120,11 +134,23 @@ public class Tile extends JPanel {
          }
 
         if (playable){
-
-            g2d.setStroke(new BasicStroke(4));
-            g2d.setColor(Color.blue);
-            g2d.fillRect((int) (0 + this.getWidth() * 0.4), 0,
-                    (int) (this.getWidth() * 0.2), this.getHeight());
+            if ((neighbours.containsKey(Direction.UP) && neighbours.containsKey(Direction.DOWN)) || (neighbours.containsKey(Direction.LEFT) && neighbours.containsKey(Direction.RIGHT))) {
+                g2d.setStroke(new BasicStroke(4));
+                g2d.setColor(Color.blue);
+                g2d.fillRect((int) (0 + this.getWidth() * 0.4), 0,
+                        (int) (this.getWidth() * 0.2), this.getHeight());
+            } else {
+                g2d.setStroke(new BasicStroke(4));
+                g2d.setColor(Color.blue);
+                g2d.fillRect((int) (0 + this.getWidth() * 0.4), 0,
+                        (int) (this.getWidth() * 0.2), (int) (this.getHeight() * 0.6));
+                g2d.fillRect(0, (int) (0 + this.getWidth() * 0.4),
+                        (int) (this.getWidth() * 0.6), (int) (this.getWidth() * 0.2));
+            }
+//            g2d.setStroke(new BasicStroke(4));
+//            g2d.setColor(Color.blue);
+//            g2d.fillRect((int) (0 + this.getWidth() * 0.4), 0,
+//                    (int) (this.getWidth() * 0.2), this.getHeight());
 
 
         }

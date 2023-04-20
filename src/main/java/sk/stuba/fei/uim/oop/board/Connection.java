@@ -1,15 +1,16 @@
 package sk.stuba.fei.uim.oop.board;
 
 import lombok.Data;
+import lombok.Setter;
 
 @Data
 public class Connection {
 
-    private Tile tile;
-
+    private TileI tile;
+@Setter
     private boolean connected;
 
-    public Connection(Tile tile) {
+    public Connection(TileI tile) {
         this.tile = tile;
         this.connected = false;
     }

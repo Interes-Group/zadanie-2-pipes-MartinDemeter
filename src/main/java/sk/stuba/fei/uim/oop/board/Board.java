@@ -9,34 +9,35 @@ import java.util.Random;
 
 public class Board extends JPanel {
 
-    private Tile[][] board;
+    private TileI[][] board;
 
     public Board(int dimension) {
         this.initializeBoard(dimension);
         this.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
         this.setBackground(Color.YELLOW);
 
-        HashSet<Tile> visitedNodes = new HashSet<>();
+        HashSet<TileI> visitedNodes = new HashSet<>();
         ArrayList<Step> stack = new ArrayList<>();
         int randomNumber = randomRange(dimension-1);
         this.board[0][randomNumber].setStart(true);
         stack.add(new Step(this.board[0][randomNumber], null));
 
-        HashSet<Tile> correctPath = new HashSet<>();
+        HashSet<TileI> correctPath = new HashSet<>();
 
         while (!stack.isEmpty()) {
             Step step = stack.remove(0);
-            Tile currentTile = step.getCurrent();
+            TileI currentTile = step.getCurrent();
             currentTile.setPreviousStep(step);
             currentTile.setBackground(Color.green);
             if (visitedNodes.contains(currentTile)) {
                 continue;
             }
             if (step.getPrevious() != null) {
+
                 currentTile.connectWith(step.getPrevious());
 
             }
-            ArrayList<Tile> allNeighbours = currentTile.getAllNeighbour();
+            ArrayList<TileI> allNeighbours = currentTile.getAllNeighbour();
             Collections.shuffle(allNeighbours);
             allNeighbours.forEach(neighbour -> {
                 if (!visitedNodes.contains(neighbour)) {
@@ -46,15 +47,25 @@ public class Board extends JPanel {
             });
             visitedNodes.add(currentTile);
             if (currentTile.isFinish()) {
-                Tile current = currentTile;;
+                TileI current = currentTile;;
                 while (current != null) {
+                    current.removeNoConnected ();
+
                     correctPath.add(current);
+
                     current.setBackground(Color.red);
                     current.setPlayable(true);
                     current.setTileOrientation(randomRange(3));
+
+
+
+                    System.out.println(current.getNeighbours());
                     current = current.getPreviousStep().getPrevious();
 
 
+                }
+                for (TileI tile : correctPath) {
+                    System.out.println(tile.isPlayable());
                 }
                 break;
             }
@@ -65,11 +76,11 @@ public class Board extends JPanel {
     }
 
     private void initializeBoard(int dimension) {
-        this.board = new Tile[dimension][dimension];
+        this.board = new TileI[dimension][dimension];
         this.setLayout(new GridLayout(dimension, dimension));
         for (int i = 0; i < dimension; i++) {
             for (int j = 0; j < dimension; j++) {
-                this.board[i][j] = new Tile();
+                this.board[i][j] = new TileI();
                 this.add(this.board[i][j]);
             }
         }
