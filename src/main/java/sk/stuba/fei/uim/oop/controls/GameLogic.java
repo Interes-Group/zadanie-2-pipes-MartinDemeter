@@ -21,6 +21,12 @@ public class GameLogic extends UniversalAdapter {
     private int counter;
 
     @Getter
+    private JButton buttonRestart;
+
+    @Getter
+    private JButton buttonControl;
+
+    @Getter
     private JLabel levelLabel;
 
     @Getter
@@ -34,6 +40,13 @@ public class GameLogic extends UniversalAdapter {
         this.initializeNewBoard(this.currentBoardSize);
         this.mainGame.add(this.currentBoard);
         this.counter = 0;
+        this.buttonRestart = new JButton("RESTART");
+        this.buttonControl = new JButton("VALIDATE");
+        buttonRestart.addActionListener(this);
+        buttonControl.addActionListener(this);
+
+        buttonRestart.setFocusable(false);
+        buttonControl.setFocusable(false);
         this.levelLabel = new JLabel();
         this.boardSizeLabel = new JLabel();
         this.updateLevelLabel();
@@ -74,23 +87,17 @@ public class GameLogic extends UniversalAdapter {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        this.gameRestart();
+        if (e.getSource() == buttonRestart){
+            this.gameRestart();
+        } else if (e.getSource() == buttonControl){
+
+        }
+
 //        this.mainGame.revalidate();
 //        this.mainGame.repaint();
 //        this.mainGame.setFocusable(true);
 //        this.mainGame.requestFocus();
 
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-        Component current = this.currentBoard.getComponentAt(e.getX(), e.getY());
-        if (!(current instanceof TileI)) {
-            return;
-        } else {
-            ((TileI) current).rotate();
-        }
-        this.currentBoard.repaint();
     }
 
 
@@ -108,7 +115,35 @@ public class GameLogic extends UniversalAdapter {
     }
 
 
+    @Override
+    public void mousePressed(MouseEvent e) {
+        Component current = this.currentBoard.getComponentAt(e.getX(), e.getY());
+        if (!(current instanceof TileI)) {
+            return;
+        } else {
 
+            ((TileI) current).rotate();
+            ((TileI) current).setHighlight(true);
+            System.out.println(((TileI) current).getDirectionOne() + " " + ((TileI) current).getDirectionTwo());
+        }
+        this.currentBoard.repaint();
+
+    }
+
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        Component current = this.currentBoard.getComponentAt(e.getX(), e.getY());
+        if (!(current instanceof TileI)) {
+            return;
+        } else {
+            ((TileI) current).setHighlight(false );
+            System.out.println("keket");
+            ((TileI) current).repaint();
+
+        }
+
+    }
 
     @Override
     public void stateChanged(ChangeEvent e) {
@@ -135,6 +170,7 @@ public class GameLogic extends UniversalAdapter {
                 break;
             case KeyEvent.VK_ESCAPE:
                 this.mainGame.dispose();
+                System.exit(0);
         }
     }
 }

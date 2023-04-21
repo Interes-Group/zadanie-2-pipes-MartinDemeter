@@ -13,10 +13,6 @@ public class Board extends JPanel {
         this.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
         this.setBackground(Color.YELLOW);
 
-
-
-
-        HashSet<TileI> visitedNodes = new HashSet<>();
         ArrayList<TileI> path = new ArrayList<>();
         int randomNumber = randomRange(dimension-1);
         TileI start = this.board[0][randomNumber];
@@ -26,76 +22,14 @@ public class Board extends JPanel {
 
         dfsRandom(start, finish, path);
 
-
-//        System.out.println("Path: ");
         for (TileI tile : path) {
+            tile.removeNoConnected();
             tile.setBackground(Color.green);
+            tile.printNeighbour2();
+            System.out.println("-------");
         }
-//        System.out.println("END");
 
         this.setValue(path);
-
-//        System.out.println("Path: ");
-//        for (TileI tile : path) {
-//            System.out.println(tile.getAllNeighbour());
-//        }
-//        System.out.println("END");
-//        HashSet<TileI> visitedNodes = new HashSet<>();
-//        ArrayList<Step> stack = new ArrayList<>();
-//        int randomNumber = randomRange(dimension-1);
-//        this.board[0][randomNumber].setStart(true);
-//        stack.add(new Step(this.board[0][randomNumber], null));
-//
-//        HashSet<TileI> correctPath = new HashSet<>();
-//
-//        while (!stack.isEmpty()) {
-//            Step step = stack.remove(0);
-//            TileI currentTile = step.getCurrent();
-//            currentTile.setPreviousStep(step);
-//
-//            if (visitedNodes.contains(currentTile)) {
-//                continue;
-//            }
-//            if (step.getPrevious() != null) {
-//
-//                currentTile.connectWith(step.getPrevious());
-//
-//            }
-//            ArrayList<TileI> allNeighbours = currentTile.getAllNeighbour();
-//            Collections.shuffle(allNeighbours);
-//            allNeighbours.forEach(neighbour -> {
-//                if (!visitedNodes.contains(neighbour)) {
-//
-//                    stack.add(0, new Step(neighbour, currentTile));
-//
-//                }
-//            });
-//            visitedNodes.add(currentTile);
-//            if (currentTile.isFinish()) {
-//                TileI current = currentTile;;
-//                while (current != null) {
-//                    current.removeNoConnected ();
-//
-//                    correctPath.add(current);
-//
-////                    current.setBackground(Color.red);
-//                    current.setPlayable(true);
-//                    current.fintTileType();
-////                    current.setTileOrientation(randomRange(3));
-//
-//
-//
-//                    System.out.println(current.getNeighbours());
-//                    current = current.getPreviousStep().getPrevious();
-//
-//
-//                }
-//
-//                break;
-//            }
-//        }
-
-
 
     }
     public void setValue(ArrayList<TileI> path) {
@@ -145,26 +79,46 @@ public class Board extends JPanel {
 
         // Construct the path from end to start
         TileI current = finish;
-        while (current != null) {
-            path.add(current);
-            current.connectWith(current.getPrevious());
-            current.removeNoConnected();
+        do {
             current.setPlayable(true);
-//            System.out.println(current.getNeighbours());
-            current.printNeighbour();
-            current.setTileTypeBasedOnConnections();
-            System.out.println(current.getTileType());
-
-            System.out.println(current.getDirectionOne()+" " +current.getDirectionTwo());
-//            current.setTileOrientation(randomRange(3));
+            path.add(current);
+//            current.connectWith(current.getPrevious());
+////            current.removeNoConnected();
+//            current.setPlayable(true);
+////            System.out.println(current.getNeighbours());
+//            current.printNeighbour();
+//           current.printNeighbour2();
+//            current.setTileTypeBasedOnConnections();
+//            current.removeNoConnected();
+//            System.out.println(current.getTileType());
+//
+//            System.out.println(current.getDirectionOne()+" " +current.getDirectionTwo());
+////            current.setTileOrientation(randomRange(3));
+            this.updateTile(current);
             current = current.getPrevious();
 
-        }
+        } while (current != null);
         Collections.reverse(path);
         return path;
     }
 
+    private void updateTile(TileI tileI) {
+        tileI.connectWith(tileI.getPrevious());
+//            current.removeNoConnected();
+//        tileI.setPlayable(true);
+//            System.out.println(current.getNeighbours());
+        tileI.printNeighbour();
+//        tileI.printNeighbour2();
+        tileI.setTileTypeBasedOnConnections();
 
+
+        tileI.pairDirectionAndTubes();
+        System.out.println(tileI.getTileType());
+
+        System.out.println(tileI.getDirectionOne()+" " +tileI.getDirectionTwo());
+            tileI.multipleRotate(randomRange(3));
+
+    }
 
     public String getPathString(ArrayList<TileI> path) {
         StringBuilder sb = new StringBuilder();
@@ -177,28 +131,7 @@ public class Board extends JPanel {
         return sb.toString();
     }
 
-    private boolean dfs(TileI current, HashSet<TileI> visitedNodes, ArrayList<TileI> path) {
-        visitedNodes.add(current);
-        path.add(current);
 
-        if (current.isFinish()) {
-            return true;
-        }
-
-        for (TileI neighbour : current.getAllNeighbour()) {
-            current.setBackground(Color.red);
-            if (!visitedNodes.contains(neighbour)) {
-
-                if (dfs(neighbour, visitedNodes, path)) {
-
-                    return true;
-                }
-            }
-        }
-
-        path.remove(path.size() - 1);
-        return false;
-    }
 
     private void initializeBoard(int dimension) {
         this.board = new TileI[dimension][dimension];

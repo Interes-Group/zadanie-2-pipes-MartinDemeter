@@ -17,8 +17,6 @@ public class Game {
         frame.setFocusable(true);
         frame.requestFocusInWindow();
 
-
-
         GameLogic logic = new GameLogic(frame);
         frame.addKeyListener(logic);
 
@@ -27,14 +25,6 @@ public class Game {
 
         JPanel upMenu = new JPanel();
         downMenu.setBackground(Color.LIGHT_GRAY);
-
-        JButton buttonRestart = new JButton("RESTART");
-        buttonRestart.addActionListener(logic);
-        buttonRestart.setFocusable(false);
-
-        JButton buttonControl = new JButton("VALIDATE");
-        buttonControl.addActionListener(logic);
-        buttonControl.setFocusable(false);
 
         JSlider slider = new JSlider(JSlider.HORIZONTAL, 8, 12, 8);
         slider.setMinorTickSpacing(2);
@@ -50,8 +40,8 @@ public class Game {
         frame.add(upMenu, BorderLayout.PAGE_START);
 
         downMenu.setLayout(new GridLayout(1, 3));
-        downMenu.add(buttonRestart);
-        downMenu.add(buttonControl);
+        downMenu.add(logic.getButtonRestart());
+        downMenu.add(logic.getButtonControl());
         downMenu.add(slider);
         frame.add(downMenu, BorderLayout.PAGE_END);
 
