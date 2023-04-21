@@ -17,6 +17,19 @@ public class TileI extends JPanel {
 
     @Getter
     private Map<Direction, Connection> neighbours;
+    @Getter
+    private Direction directionOne;
+
+    @Getter
+    private Direction directionTwo;
+
+    @Setter
+    @Getter
+    private int tileType;
+
+    @Getter
+    @Setter
+    private TileI previous;
 
     @Getter
     @Setter
@@ -33,21 +46,33 @@ public class TileI extends JPanel {
     private int orientation;
 
     private Step previousStep;
-    JLabel label;
+
     public TileI() {
         this.finish = false;
         this.playable = false;
+
+        this.directionOne = null;
+        this.directionTwo = null;
+        this.tileType = 0;
         this.orientation = 0;
         this.setBorder(BorderFactory.createLineBorder(Color.black));
         this.setBackground(Color.ORANGE);
         this.neighbours = new HashMap<>();
 
-        label = new JLabel();
-        this.add(label);
+
+
         this.previousStep = null;
 
 
     }
+
+//    public void setPrevious(TileI previous) {
+//        this.previous = previous;
+//    }
+//
+//    public TileI getPrevious() {
+//        return this.previous;
+//    }
 
     public Step getPreviousStep() {
         return this.previousStep;
@@ -57,12 +82,45 @@ public class TileI extends JPanel {
         this.previousStep = step;
     }
     public void printNeighbour() {
-        for (Map.Entry m : neighbours.entrySet()) {
-
-//            label.setText((String) m.getKey());
-            System.out.println(m.getValue());
+        for (Direction direction : Direction.values()) {
+            Connection connection = this.neighbours.get(direction);
+            if (connection != null) {
+                System.out.println(direction + ": " + connection);
+                if (this.directionOne == null){
+                    this.directionOne = direction;
+                } else {
+                    this.directionTwo = direction;
+                }
+            } else {
+                System.out.println(direction + ": no connection");
+            }
         }
     }
+
+    public TileI getNeighbour(Direction dir) {
+        Connection conn = neighbours.get(dir);
+        if (conn != null && conn.isConnected()) {
+            return neighbours.get(dir).getTile();
+        }
+        return null;
+    }
+    public void setTileTypeBasedOnConnections() {
+        if(!this.isFinish() && !this.isStart()) {
+            if (this.directionOne.opposite() == this.directionTwo){
+                this.tileType = 1;
+            } else {
+                this.tileType = 2;
+            }
+        }
+
+    }
+//    public TileI getNeighbour(Direction dir) {
+//        Connection conn = neighbours.get(dir);
+//        if (conn != null && conn.isConnected()) {
+//            return conn.getNeighbour(this);
+//        }
+//        return null;
+//    }
 
     public void addNeighbour(Direction direction, TileI tile) {
         this.neighbours.put(direction, new Connection(tile));
@@ -100,6 +158,15 @@ public class TileI extends JPanel {
         }
     }
 
+    public void fintTileType() {
+        if ((neighbours.containsKey(Direction.UP) && neighbours.containsKey(Direction.DOWN)) || (neighbours.containsKey(Direction.LEFT) && neighbours.containsKey(Direction.RIGHT))){
+            this.tileType = 1;
+        } else {
+            this.tileType = 2;
+        }
+    }
+
+
     public void rotate() {
         orientation = (orientation + 90) % 360;
         repaint();
@@ -108,7 +175,7 @@ public class TileI extends JPanel {
     public void setTileOrientation(int number) {
 
         number +=1;
-        System.out.println(number);
+//        System.out.println(number);
         switch (number) {
             case 1: this.orientation = 0;
                 break;
@@ -120,10 +187,18 @@ public class TileI extends JPanel {
                 break;
         }
     }
+//    private void calculateDirection() {
+//        if ((neighbours.containsKey(Direction.UP) && neighbours.containsKey(Direction.DOWN))) {
+//            this.neighbours.containsKey(Direction.UP).
+//
+//        }
+//    }
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D)g.create();
+
         g2d.rotate(Math.toRadians(orientation), getWidth() / 2, getHeight() / 2);
+
         if (this.highlight) {
 
             g2d.setColor(Color.black);
@@ -134,19 +209,28 @@ public class TileI extends JPanel {
          }
 
         if (playable){
-            if ((neighbours.containsKey(Direction.UP) && neighbours.containsKey(Direction.DOWN)) || (neighbours.containsKey(Direction.LEFT) && neighbours.containsKey(Direction.RIGHT))) {
+            if (tileType == 1) {
                 g2d.setStroke(new BasicStroke(4));
                 g2d.setColor(Color.blue);
                 g2d.fillRect((int) (0 + this.getWidth() * 0.4), 0,
                         (int) (this.getWidth() * 0.2), this.getHeight());
-            } else {
+            } else if (tileType == 2){
                 g2d.setStroke(new BasicStroke(4));
                 g2d.setColor(Color.blue);
                 g2d.fillRect((int) (0 + this.getWidth() * 0.4), 0,
                         (int) (this.getWidth() * 0.2), (int) (this.getHeight() * 0.6));
                 g2d.fillRect(0, (int) (0 + this.getWidth() * 0.4),
                         (int) (this.getWidth() * 0.6), (int) (this.getWidth() * 0.2));
+            } else {
+                g2d.setStroke(new BasicStroke(4));
+                g2d.setColor(Color.blue);
+                g2d.fillRect((int) (0 + this.getWidth() * 0.4), 0,
+                        (int) (this.getWidth() * 0.2), (int) (this.getHeight() * 0.6));
             }
+//            for (Map.Entry<Direction, Connection> entry : this.neighbours.entrySet()) {
+//                System.out.println(entry.getValue().isConnected());
+//
+//            }
 //            g2d.setStroke(new BasicStroke(4));
 //            g2d.setColor(Color.blue);
 //            g2d.fillRect((int) (0 + this.getWidth() * 0.4), 0,

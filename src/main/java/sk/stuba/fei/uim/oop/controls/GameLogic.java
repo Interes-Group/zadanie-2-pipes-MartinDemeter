@@ -129,7 +129,6 @@ public class GameLogic extends UniversalAdapter {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        System.out.println(e);
         switch (e.getKeyCode()) {
             case KeyEvent.VK_R:
                 this.gameRestart();
