@@ -1,43 +1,47 @@
 package sk.stuba.fei.uim.oop.board;
 
+import lombok.Getter;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 
 public class Board extends JPanel {
 
-    private TileI[][] board;
+    private Tile[][] board;
+    @Getter
+    private Tile startTile;
 
     public Board(int dimension) {
         this.initializeBoard(dimension);
         this.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
         this.setBackground(Color.YELLOW);
 
-        ArrayList<TileI> path = new ArrayList<>();
-        int randomNumber = randomRange(dimension-1);
-        TileI start = this.board[0][randomNumber];
-        start.setStart(true);
-        TileI finish = this.board[dimension-1][randomRange(dimension-1)];
+        ArrayList<Tile> path = new ArrayList<>();
+
+        startTile = this.board[0][randomRange(dimension-1)];
+        startTile.setStart(true);
+        Tile finish = this.board[dimension-1][randomRange(dimension-1)];
         finish.setFinish(true);
 
-        dfsRandom(start, finish, path);
+        dfsRandom(startTile, finish, path);
 
-        for (TileI tile : path) {
-            tile.removeNoConnected();
+        for (Tile tile : path) {
+            tile.removeNoPlayable();
             tile.setBackground(Color.green);
             tile.printNeighbour2();
-            System.out.println("-------");
+            System.out.println("------- " + tile.getTileType());
         }
 
-        this.setValue(path);
+//        this.setValue(path);
 
     }
-    public void setValue(ArrayList<TileI> path) {
-        for (TileI tile : path) {
+    private void setValue(ArrayList<Tile> path) {
+        for (Tile tile : path) {
             int x = tile.getX();
             int y = tile.getY();
 
-            for (TileI neighbour : tile.getAllNeighbour()) {
+            for (Tile neighbour : tile.getAllNeighbour()) {
                 int dx = neighbour.getX() - x;
                 int dy = neighbour.getY() - y;
 
@@ -51,24 +55,23 @@ public class Board extends JPanel {
             }
         }
     }
-    public ArrayList<TileI> dfsRandom(TileI start, TileI finish, ArrayList<TileI> path) {
-        HashSet<TileI> visited = new HashSet<>();
+    private void dfsRandom(Tile start, Tile finish, ArrayList<Tile> path) {
+        HashSet<Tile> visited = new HashSet<>();
 
-        Stack<TileI> stack = new Stack<>();
+        Stack<Tile> stack = new Stack<>();
         stack.push(start);
 
         while (!stack.isEmpty()) {
-            TileI current = stack.pop();
+            Tile current = stack.pop();
             visited.add(current);
 
             if (current.isFinish()) {
-                path.add(current);
                 break;
             }
 
-            ArrayList<TileI> neighbors = current.getAllNeighbour();
+            ArrayList<Tile> neighbors = current.getAllNeighbour();
             Collections.shuffle(neighbors);
-            for (TileI neighbor : neighbors) {
+            for (Tile neighbor : neighbors) {
                 if (!visited.contains(neighbor)) {
                     current.setBackground(Color.red);
                     neighbor.setPrevious(current);
@@ -78,7 +81,7 @@ public class Board extends JPanel {
         }
 
         // Construct the path from end to start
-        TileI current = finish;
+        Tile current = finish;
         do {
             current.setPlayable(true);
             path.add(current);
@@ -99,31 +102,30 @@ public class Board extends JPanel {
 
         } while (current != null);
         Collections.reverse(path);
-        return path;
     }
 
-    private void updateTile(TileI tileI) {
-        tileI.connectWith(tileI.getPrevious());
+    private void updateTile(Tile tile) {
+        tile.connectWith(tile.getPrevious());
 //            current.removeNoConnected();
 //        tileI.setPlayable(true);
 //            System.out.println(current.getNeighbours());
-        tileI.printNeighbour();
+        tile.printNeighbour();
 //        tileI.printNeighbour2();
-        tileI.setTileTypeBasedOnConnections();
+        tile.setTileTypeBasedOnConnections();
 
 
-        tileI.pairDirectionAndTubes();
-        System.out.println(tileI.getTileType());
+        tile.pairDirectionAndTubes();
+        System.out.println(tile.getTileType());
 
-        System.out.println(tileI.getDirectionOne()+" " +tileI.getDirectionTwo());
-            tileI.multipleRotate(randomRange(3));
+        System.out.println(tile.getDirectionOne()+" " + tile.getDirectionTwo());
+            tile.multipleRotate(randomRange(3));
 
     }
 
-    public String getPathString(ArrayList<TileI> path) {
+    public String getPathString(ArrayList<Tile> path) {
         StringBuilder sb = new StringBuilder();
         sb.append("Path: ");
-        for (TileI tile : path) {
+        for (Tile tile : path) {
             sb.append(tile.toString());
             sb.append(" -> ");
         }
@@ -134,11 +136,11 @@ public class Board extends JPanel {
 
 
     private void initializeBoard(int dimension) {
-        this.board = new TileI[dimension][dimension];
+        this.board = new Tile[dimension][dimension];
         this.setLayout(new GridLayout(dimension, dimension));
         for (int i = 0; i < dimension; i++) {
             for (int j = 0; j < dimension; j++) {
-                this.board[i][j] = new TileI();
+                this.board[i][j] = new Tile();
                 this.add(this.board[i][j]);
             }
         }

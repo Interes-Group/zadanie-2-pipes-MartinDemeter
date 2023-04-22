@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class Step {
-    private TileI current;
-    private TileI previous;
+    private Tile current;
+    private Tile previous;
 }

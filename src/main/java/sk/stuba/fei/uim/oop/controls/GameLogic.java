@@ -2,7 +2,7 @@ package sk.stuba.fei.uim.oop.controls;
 
 import lombok.Getter;
 import sk.stuba.fei.uim.oop.board.Board;
-import sk.stuba.fei.uim.oop.board.TileI;
+import sk.stuba.fei.uim.oop.board.Tile;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -40,13 +40,14 @@ public class GameLogic extends UniversalAdapter {
         this.initializeNewBoard(this.currentBoardSize);
         this.mainGame.add(this.currentBoard);
         this.counter = 0;
+
         this.buttonRestart = new JButton("RESTART");
         this.buttonControl = new JButton("VALIDATE");
-        buttonRestart.addActionListener(this);
-        buttonControl.addActionListener(this);
+        this.buttonRestart.addActionListener(this);
+        this.buttonControl.addActionListener(this);
+        this.buttonRestart.setFocusable(false);
+        this.buttonControl.setFocusable(false);
 
-        buttonRestart.setFocusable(false);
-        buttonControl.setFocusable(false);
         this.levelLabel = new JLabel();
         this.boardSizeLabel = new JLabel();
         this.updateLevelLabel();
@@ -85,12 +86,19 @@ public class GameLogic extends UniversalAdapter {
         }
     }
 
+    private void validateConnections() {
+        System.out.println("kokot");
+        this.currentBoard.getStartTile().validate();
+        this.currentBoard.getStartTile().setHighlight(true);
+        this.currentBoard.repaint();
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == buttonRestart){
             this.gameRestart();
         } else if (e.getSource() == buttonControl){
-
+            this.validateConnections();
         }
 
 //        this.mainGame.revalidate();
@@ -100,50 +108,46 @@ public class GameLogic extends UniversalAdapter {
 
     }
 
-
-
     @Override
     public void mouseMoved(MouseEvent e) {
         Component current = this.currentBoard.getComponentAt(e.getX(), e.getY());
-        if (!(current instanceof TileI)) {
+        if (!(current instanceof Tile)) {
             return;
         } else {
-            ((TileI) current).setHighlight(true);
+            ((Tile) current).setHighlightMouse(true);
         }
-
         this.currentBoard.repaint();
     }
-
 
     @Override
     public void mousePressed(MouseEvent e) {
         Component current = this.currentBoard.getComponentAt(e.getX(), e.getY());
-        if (!(current instanceof TileI)) {
+        if (!(current instanceof Tile)) {
             return;
         } else {
 
-            ((TileI) current).rotate();
-            ((TileI) current).setHighlight(true);
-            System.out.println(((TileI) current).getDirectionOne() + " " + ((TileI) current).getDirectionTwo());
+            ((Tile) current).rotate();
+            ((Tile) current).setHighlightMouse(true);
+            System.out.println(((Tile) current).getDirectionOne() + " " + ((Tile) current).getDirectionTwo());
         }
         this.currentBoard.repaint();
 
     }
 
 
-    @Override
-    public void mouseExited(MouseEvent e) {
-        Component current = this.currentBoard.getComponentAt(e.getX(), e.getY());
-        if (!(current instanceof TileI)) {
-            return;
-        } else {
-            ((TileI) current).setHighlight(false );
-            System.out.println("keket");
-            ((TileI) current).repaint();
-
-        }
-
-    }
+//    @Override
+//    public void mouseExited(MouseEvent e) {
+//        Component current = this.currentBoard.getComponentAt(e.getX(), e.getY());
+//        if (!(current instanceof TileI)) {
+//            return;
+//        } else {
+//            ((TileI) current).setHighlight(false );
+//            System.out.println("keket");
+//            ((TileI) current).repaint();
+//
+//        }
+//
+//    }
 
     @Override
     public void stateChanged(ChangeEvent e) {
@@ -153,13 +157,10 @@ public class GameLogic extends UniversalAdapter {
             this.gameRestart();
         }
         this.updateBoardSizeLabel();
-
-
 //        this.mainGame.revalidate();
 //        this.mainGame.repaint();
 //        this.mainGame.setFocusable(true);
 //        this.mainGame.requestFocus();
-
     }
 
     @Override
@@ -167,6 +168,9 @@ public class GameLogic extends UniversalAdapter {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_R:
                 this.gameRestart();
+                break;
+            case KeyEvent.VK_ENTER:
+                this.validateConnections();
                 break;
             case KeyEvent.VK_ESCAPE:
                 this.mainGame.dispose();

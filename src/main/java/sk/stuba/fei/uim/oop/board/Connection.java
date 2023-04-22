@@ -8,12 +8,12 @@ import lombok.Setter;
 public class Connection {
 
     @Getter
-    private TileI tile;
+    private Tile tile;
 @Setter
 @Getter
     private boolean connected;
 
-    public Connection(TileI tile) {
+    public Connection(Tile tile) {
         this.tile = tile;
         this.connected = false;
     }
