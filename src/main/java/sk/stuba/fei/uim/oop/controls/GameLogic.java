@@ -39,7 +39,7 @@ public class GameLogic extends UniversalAdapter {
         this.currentBoardSize = INITIAL_BOARD_SIZE;
         this.initializeNewBoard(this.currentBoardSize);
         this.mainGame.add(this.currentBoard);
-        this.counter = 0;
+        this.counter = 1;
 
         this.buttonRestart = new JButton("RESTART");
         this.buttonControl = new JButton("VALIDATE");
@@ -90,12 +90,17 @@ public class GameLogic extends UniversalAdapter {
         System.out.println("kokot");
         this.currentBoard.getStartTile().validate();
         this.currentBoard.getStartTile().setHighlight(true);
+        if (this.currentBoard.getFinishTile().isHighlight()) {
+            this.counter++;
+            this.gameRestart();
+        }
         this.currentBoard.repaint();
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == buttonRestart){
+            this.counter = 1;
             this.gameRestart();
         } else if (e.getSource() == buttonControl){
             this.validateConnections();
@@ -154,6 +159,7 @@ public class GameLogic extends UniversalAdapter {
         int newSize = ((JSlider) e.getSource()).getValue();
         if (newSize != this.currentBoardSize) {
             this.currentBoardSize = newSize;
+            this.counter = 1;
             this.gameRestart();
         }
         this.updateBoardSizeLabel();
@@ -167,10 +173,12 @@ public class GameLogic extends UniversalAdapter {
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_R:
+                this.counter = 1;
                 this.gameRestart();
                 break;
             case KeyEvent.VK_ENTER:
                 this.validateConnections();
+
                 break;
             case KeyEvent.VK_ESCAPE:
                 this.mainGame.dispose();

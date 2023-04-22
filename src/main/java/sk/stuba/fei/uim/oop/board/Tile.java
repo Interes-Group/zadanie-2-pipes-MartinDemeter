@@ -44,6 +44,7 @@ public class Tile extends JPanel {
     private boolean playable;
 
     private int orientation;
+    @Getter
     @Setter
     private boolean highlight;
 
@@ -132,98 +133,87 @@ public class Tile extends JPanel {
         this.neighbours.get(direction).setConnected(true);
         neighbour.neighbours.get(direction.opposite()).setConnected(true);
     }
-    public void validate() {
-
-
-            if (this.neighbours.containsKey(directionOne) && !this.neighbours.get(directionOne).isConnected()) {
-                if (this.neighbours.get(directionOne).isConnected()) {
-                    System.out.println("1");
-                }
-                System.out.println("direction 1");
-
-                Tile tile = this.neighbours.get(directionOne).getTile();
-                if (tile.directionOne  == this.directionOne.opposite() || tile.directionTwo  == this.directionOne.opposite() ) {
-//                    this.neighbours.get(directionOne).setConnected(true);
-//
-//                    tile.neighbours.get(directionOne.opposite()).setConnected(true);
-
-                    connectNeighbours(directionOne, tile);
-                    tile.setHighlight(true);
-                    tile.validate();
-
-
-
-                }
-//                this.highlight = true;
-
-                repaint();
-//                this.setBackground(Color.blue);
-//                this.setPlayable(false);
-
-
-
-
-
-            }else if (this.neighbours.containsKey(directionTwo) && !this.neighbours.get(directionTwo).isConnected()) {
-                if (this.neighbours.get(directionOne).isConnected()) {
-                    System.out.println("2");
-                }
-                System.out.println("direction 2");
-                Tile tile = this.neighbours.get(directionTwo).getTile();
-                if (tile.directionOne  == this.directionTwo.opposite() || tile.directionTwo  == this.directionTwo.opposite()) {
-//                    this.neighbours.get(directionTwo).setConnected(true);
-//                    tile.neighbours.get(directionTwo.opposite()).setConnected(true);
-
-                    connectNeighbours(directionTwo, tile);
-                    tile.setHighlight(true);
-                    tile.validate();
-
-
-                }
-//                this.highlight = true;
-                //                this.setBackground(Color.blue);
-                this.repaint();
-
-
-            }
-
-        System.out.println(directionOne +" " + directionTwo);
-        this.printNeighbour();
-//        for (Map.Entry<Direction, Connection> entry : this.neighbours.entrySet()) {
-////            entry.getValue().setConnected(false);
-//            if (!entry.getValue().isConnected()){
-//                Tile tile = entry.getValue().getTile();
-//
-////            Direction neighbourDirection = entry.getKey();
-////            Connection neighbourConnection = entry.getValue();
-//
-////
-////            tile.directionOne.opposite() == this.directionOne
-//
-//            // Check if neighbourDirection's direction1 or direction2 is opposite to myDirection1 or myDirection2
-//                Direction direction = entry.getKey().opposite();
-//            if (this.directionOne == direction) {
-//                Direction direction1 = entry.getKey();
-//            }
-//
-//                if (direction == this.directionOne || direction == this.directionTwo) {
-//                    this.setBackground(Color.blue);
-//                    entry.getValue().setConnected(true);
-//
-//                    tile.getNeighbours().get(entry.getKey().opposite()).setConnected(true);
-//
-//                    System.out.println("adgsagdsagd");
-//                    repaint();
-//                    this.printNeighbour2();
-//                    tile.printNeighbour2();
-//
-//                    // The neighbour's direction1 or direction2 is opposite to one of my directions
-//                    // Do something with the neighbourConnection
-//                }
-//            }
-//
-//        }
+    private boolean shouldConnect(Tile tile, Direction direction) {
+        return tile.directionOne == direction.opposite() || tile.directionTwo == direction.opposite();
     }
+
+    private void tryConnect(Tile tile, Direction direction) {
+        if (shouldConnect(tile, direction)) {
+            connectNeighbours(direction, tile);
+            tile.setHighlight(true);
+            tile.validate();
+        }
+    }
+
+    public void validate() {
+        if (this.neighbours.containsKey(directionOne) && !this.neighbours.get(directionOne).isConnected()) {
+            Tile tile = this.neighbours.get(directionOne).getTile();
+            tryConnect(tile, directionOne);
+        } else if (this.neighbours.containsKey(directionTwo) && !this.neighbours.get(directionTwo).isConnected()) {
+            Tile tile = this.neighbours.get(directionTwo).getTile();
+            tryConnect(tile, directionTwo);
+        }
+        repaint();
+        System.out.println(directionOne + " " + directionTwo);
+        this.printNeighbour();
+    }
+//    public void validate() {
+//        if (this.neighbours.containsKey(directionOne) && !this.neighbours.get(directionOne).isConnected()) {
+//            Tile tile = this.neighbours.get(directionOne).getTile();
+//            if (tile.directionOne == this.directionOne.opposite() || tile.directionTwo == this.directionOne.opposite()) {
+//                connectNeighbours(directionOne, tile);
+//                tile.setHighlight(true);
+//                tile.validate();
+//            }
+//            repaint();
+//        } else if (this.neighbours.containsKey(directionTwo) && !this.neighbours.get(directionTwo).isConnected()) {
+//            Tile tile = this.neighbours.get(directionTwo).getTile();
+//            if (tile.directionOne == this.directionTwo.opposite() || tile.directionTwo == this.directionTwo.opposite()) {
+//                connectNeighbours(directionTwo, tile);
+//                tile.setHighlight(true);
+//                tile.validate();
+//            }
+//            repaint();
+//        }
+//        System.out.println(directionOne + " " + directionTwo);
+//        this.printNeighbour();
+//    }
+
+
+//    public void validate() {
+//
+//            if (this.neighbours.containsKey(directionOne) && !this.neighbours.get(directionOne).isConnected()) {
+//                if (this.neighbours.get(directionOne).isConnected()) {
+//                    System.out.println("1");
+//                }
+//                System.out.println("direction 1");
+//
+//                Tile tile = this.neighbours.get(directionOne).getTile();
+//                if (tile.directionOne  == this.directionOne.opposite() || tile.directionTwo  == this.directionOne.opposite() ) {
+//                    connectNeighbours(directionOne, tile);
+//                    tile.setHighlight(true);
+//                    tile.validate();
+//                }
+//                repaint();
+//
+//            } else if (this.neighbours.containsKey(directionTwo) && !this.neighbours.get(directionTwo).isConnected()) {
+//                if (this.neighbours.get(directionOne).isConnected()) {
+//                    System.out.println("2");
+//                }
+//                System.out.println("direction 2");
+//                Tile tile = this.neighbours.get(directionTwo).getTile();
+//
+//                if (tile.directionOne  == this.directionTwo.opposite() || tile.directionTwo  == this.directionTwo.opposite()) {
+//                    connectNeighbours(directionTwo, tile);
+//                    tile.setHighlight(true);
+//                    tile.validate();
+//                }
+//                this.repaint();
+//            }
+//
+//        System.out.println(directionOne +" " + directionTwo);
+//        this.printNeighbour();
+//    }
 
     public void removeNoPlayable() {
         Iterator<Map.Entry<Direction, Connection>> iterator = this.neighbours.entrySet().iterator();
@@ -234,7 +224,6 @@ public class Tile extends JPanel {
                 iterator.remove();
             }
         }
-//        this.neighbours.entrySet().removeIf(entry -> !entry.getValue().getTile().isPlayable());
     }
 
     public void rotate() {
@@ -257,30 +246,6 @@ public class Tile extends JPanel {
             this.rotate();
         }
     }
-
-//    public void pairDircetionAndTubes() {
-//        if (this.tileType == 1){
-//            if (this.directionOne == Direction.RIGHT || this.directionTwo == Direction.RIGHT){
-//                orientation += 90;
-//            }
-//        } else if (this.tileType == 2) {
-//            if ((this.directionOne == Direction.RIGHT && this.directionTwo == Direction.DOWN) || (this.directionOne == Direction.DOWN && this.directionTwo == Direction.RIGHT)) {
-//                orientation += 180;
-//            } else if ((this.directionOne == Direction.LEFT && this.directionTwo == Direction.DOWN) || (this.directionOne == Direction.DOWN && this.directionTwo == Direction.LEFT)) {
-//                orientation += 270;
-//            } else if ((this.directionOne == Direction.RIGHT && this.directionTwo == Direction.UP) || (this.directionOne == Direction.UP && this.directionTwo == Direction.RIGHT)) {
-//                orientation += 90;
-//            }
-//        } else {
-//            if (this.directionOne == Direction.DOWN) {
-//                orientation += 180;
-//            } else if (this.directionOne == Direction.LEFT) {
-//                orientation += 270;
-//            } else if (this.directionOne == Direction.RIGHT) {
-//                orientation += 90;
-//            }
-//        }
-//    }
 
     public void pairDirectionAndTubes() {
         switch (this.tileType) {

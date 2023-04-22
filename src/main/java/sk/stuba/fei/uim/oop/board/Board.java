@@ -12,6 +12,10 @@ public class Board extends JPanel {
     @Getter
     private Tile startTile;
 
+    @Getter
+    private Tile finishTile;
+
+
     public Board(int dimension) {
         this.initializeBoard(dimension);
         this.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
@@ -21,10 +25,10 @@ public class Board extends JPanel {
 
         startTile = this.board[0][randomRange(dimension-1)];
         startTile.setStart(true);
-        Tile finish = this.board[dimension-1][randomRange(dimension-1)];
-        finish.setFinish(true);
+        finishTile = this.board[dimension-1][randomRange(dimension-1)];
+        finishTile.setFinish(true);
 
-        dfsRandom(startTile, finish, path);
+        dfsRandom(startTile, finishTile, path);
 
         for (Tile tile : path) {
             tile.removeNoPlayable();
@@ -36,25 +40,25 @@ public class Board extends JPanel {
 //        this.setValue(path);
 
     }
-    private void setValue(ArrayList<Tile> path) {
-        for (Tile tile : path) {
-            int x = tile.getX();
-            int y = tile.getY();
-
-            for (Tile neighbour : tile.getAllNeighbour()) {
-                int dx = neighbour.getX() - x;
-                int dy = neighbour.getY() - y;
-
-                if (neighbour.getTileType() == 0) {
-                    if ((dx == 0 && Math.abs(dy) == 1) || (dy == 0 && Math.abs(dx) == 1)) {
-                        neighbour.setTileType(2);
-                    } else if ((dx == 0 && Math.abs(dy) == 2) || (dy == 0 && Math.abs(dx) == 2)) {
-                        neighbour.setTileType(1);
-                    }
-                }
-            }
-        }
-    }
+//    private void setValue(ArrayList<Tile> path) {
+//        for (Tile tile : path) {
+//            int x = tile.getX();
+//            int y = tile.getY();
+//
+//            for (Tile neighbour : tile.getAllNeighbour()) {
+//                int dx = neighbour.getX() - x;
+//                int dy = neighbour.getY() - y;
+//
+//                if (neighbour.getTileType() == 0) {
+//                    if ((dx == 0 && Math.abs(dy) == 1) || (dy == 0 && Math.abs(dx) == 1)) {
+//                        neighbour.setTileType(2);
+//                    } else if ((dx == 0 && Math.abs(dy) == 2) || (dy == 0 && Math.abs(dx) == 2)) {
+//                        neighbour.setTileType(1);
+//                    }
+//                }
+//            }
+//        }
+//    }
     private void dfsRandom(Tile start, Tile finish, ArrayList<Tile> path) {
         HashSet<Tile> visited = new HashSet<>();
 
@@ -118,7 +122,7 @@ public class Board extends JPanel {
         System.out.println(tile.getTileType());
 
         System.out.println(tile.getDirectionOne()+" " + tile.getDirectionTwo());
-            tile.multipleRotate(randomRange(3));
+//            tile.multipleRotate(randomRange(3));
 
     }
 
@@ -132,8 +136,6 @@ public class Board extends JPanel {
         sb.delete(sb.length() - 4, sb.length());
         return sb.toString();
     }
-
-
 
     private void initializeBoard(int dimension) {
         this.board = new Tile[dimension][dimension];
@@ -163,13 +165,10 @@ public class Board extends JPanel {
         }
     }
 
-
-
     private int randomRange(int end) {
         int start = 0;
         Random random = new Random();
-        int number = random.nextInt((end - start) + 1) + start; // see explanation below
-//        System.out.println(number);
+        int number = random.nextInt((end - start) + 1) + start;
         return number;
     }
 }
