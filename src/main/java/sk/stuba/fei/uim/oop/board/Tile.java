@@ -216,27 +216,24 @@ public class Tile extends JPanel {
                 g2d.setColor(Color.blue);
             }
             if (tileType == 1) {
-                g2d.setStroke(new BasicStroke(4));
-                g2d.fillRect((int) (0 + this.getWidth() * 0.4), 0,
+                g2d.fillRect((int) (0 + this.getWidth() * 0.41), 0,
                         (int) (this.getWidth() * 0.2), this.getHeight());
             } else if (tileType == 2){
-                g2d.setStroke(new BasicStroke(4));
                 g2d.fillRect((int) (0 + this.getWidth() * 0.4), 0,
-                        (int) (this.getWidth() * 0.2), (int) (this.getHeight() * 0.6));
+                        (int) (this.getWidth() * 0.2), (int) (this.getHeight() * 0.59));
                 g2d.fillRect(0, (int) (0 + this.getWidth() * 0.4),
-                        (int) (this.getWidth() * 0.6), (int) (this.getWidth() * 0.2));
+                        (int) (this.getWidth() * 0.59), (int) (this.getWidth() * 0.2));
             } else {
-                g2d.setStroke(new BasicStroke(4));
                 g2d.fillRect((int) (0 + this.getWidth() * 0.4), 0,
-                        (int) (this.getWidth() * 0.2), (int) (this.getHeight() * 0.6));
+                        (int) (this.getWidth() * 0.2), (int) (this.getHeight() * 0.59));
             }
         }
 
         if (this.highlightMouse) {
             g2d.setColor(Color.black);
-            g2d.setStroke(new BasicStroke(5));
+            g2d.setStroke(new BasicStroke(6));
             g2d.drawRect((int) (0 + this.getWidth() * 0.04), (int) (0 + this.getHeight() * 0.04),
-                    (int) (this.getWidth() * 0.94), (int) (this.getHeight() * 0.94));
+                    (int) (this.getWidth() * 0.92), (int) (this.getHeight() * 0.92));
             this.highlightMouse = false;
         }
         if (isFinish()){
