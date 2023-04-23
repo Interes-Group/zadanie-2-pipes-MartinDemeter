@@ -98,10 +98,10 @@ public class GameLogic extends UniversalAdapter {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == buttonRestart){
+        if (e.getSource() == buttonRestart) {
             this.counter = 1;
             this.gameRestart();
-        } else if (e.getSource() == buttonControl){
+        } else if (e.getSource() == buttonControl) {
             this.validateConnections();
         }
     }

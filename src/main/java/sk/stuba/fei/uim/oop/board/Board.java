@@ -24,9 +24,9 @@ public class Board extends JPanel {
 
         path = new ArrayList<>();
 
-        startTile = this.board[0][randomRange(dimension-1)];
+        startTile = this.board[0][randomRange(dimension - 1)];
         startTile.setStart(true);
-        finishTile = this.board[dimension-1][randomRange(dimension-1)];
+        finishTile = this.board[dimension - 1][randomRange(dimension - 1)];
         finishTile.setFinish(true);
 
         dfsRandom(startTile, finishTile, path);
@@ -88,19 +88,19 @@ public class Board extends JPanel {
             }
         }
 
-        for (int i = 0; i < dimension; i++){
-            for (int j = 0; j < dimension; j++){
+        for (int i = 0; i < dimension; i++) {
+            for (int j = 0; j < dimension; j++) {
                 if (i != 0) {
-                    this.board[i][j].addNeighbour(Direction.UP, this.board[i-1][j]);
+                    this.board[i][j].addNeighbour(Direction.UP, this.board[i - 1][j]);
                 }
                 if (i != dimension - 1) {
-                    this.board[i][j].addNeighbour(Direction.DOWN, this.board[i+1][j]);
+                    this.board[i][j].addNeighbour(Direction.DOWN, this.board[i + 1][j]);
                 }
                 if (j != 0) {
-                    this.board[i][j].addNeighbour(Direction.LEFT, this.board[i][j-1]);
+                    this.board[i][j].addNeighbour(Direction.LEFT, this.board[i][j - 1]);
                 }
                 if (j != dimension - 1) {
-                    this.board[i][j].addNeighbour(Direction.RIGHT, this.board[i][j+1]);
+                    this.board[i][j].addNeighbour(Direction.RIGHT, this.board[i][j + 1]);
                 }
             }
         }
