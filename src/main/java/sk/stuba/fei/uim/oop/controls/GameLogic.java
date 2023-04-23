@@ -63,7 +63,6 @@ public class GameLogic extends UniversalAdapter {
             this.boardSizeLabel.setText("CURRENT BOARD SIZE: " + this.currentBoardSize);
             this.mainGame.revalidate();
             this.mainGame.repaint();
-
         }
     }
 
@@ -87,14 +86,14 @@ public class GameLogic extends UniversalAdapter {
     }
 
     private void validateConnections() {
-        System.out.println("kokot");
+        this.currentBoard.repaint();
         this.currentBoard.getStartTile().validate();
         this.currentBoard.getStartTile().setHighlight(true);
         if (this.currentBoard.getFinishTile().isHighlight()) {
             this.counter++;
             this.gameRestart();
         }
-        this.currentBoard.repaint();
+
     }
 
     @Override
@@ -105,12 +104,6 @@ public class GameLogic extends UniversalAdapter {
         } else if (e.getSource() == buttonControl){
             this.validateConnections();
         }
-
-//        this.mainGame.revalidate();
-//        this.mainGame.repaint();
-//        this.mainGame.setFocusable(true);
-//        this.mainGame.requestFocus();
-
     }
 
     @Override
@@ -130,29 +123,14 @@ public class GameLogic extends UniversalAdapter {
         if (!(current instanceof Tile)) {
             return;
         } else {
-
+            this.currentBoard.resetValidation();
             ((Tile) current).rotate();
+
             ((Tile) current).setHighlightMouse(true);
-            System.out.println(((Tile) current).getDirectionOne() + " " + ((Tile) current).getDirectionTwo());
         }
         this.currentBoard.repaint();
 
     }
-
-
-//    @Override
-//    public void mouseExited(MouseEvent e) {
-//        Component current = this.currentBoard.getComponentAt(e.getX(), e.getY());
-//        if (!(current instanceof TileI)) {
-//            return;
-//        } else {
-//            ((TileI) current).setHighlight(false );
-//            System.out.println("keket");
-//            ((TileI) current).repaint();
-//
-//        }
-//
-//    }
 
     @Override
     public void stateChanged(ChangeEvent e) {
@@ -163,10 +141,6 @@ public class GameLogic extends UniversalAdapter {
             this.gameRestart();
         }
         this.updateBoardSizeLabel();
-//        this.mainGame.revalidate();
-//        this.mainGame.repaint();
-//        this.mainGame.setFocusable(true);
-//        this.mainGame.requestFocus();
     }
 
     @Override
@@ -178,7 +152,6 @@ public class GameLogic extends UniversalAdapter {
                 break;
             case KeyEvent.VK_ENTER:
                 this.validateConnections();
-
                 break;
             case KeyEvent.VK_ESCAPE:
                 this.mainGame.dispose();

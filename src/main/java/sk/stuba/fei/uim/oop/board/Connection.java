@@ -9,8 +9,8 @@ public class Connection {
 
     @Getter
     private Tile tile;
-@Setter
-@Getter
+    @Setter
+    @Getter
     private boolean connected;
 
     public Connection(Tile tile) {

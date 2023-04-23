@@ -15,13 +15,14 @@ public class Board extends JPanel {
     @Getter
     private Tile finishTile;
 
+    private ArrayList<Tile> path;
 
     public Board(int dimension) {
         this.initializeBoard(dimension);
         this.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
         this.setBackground(Color.YELLOW);
 
-        ArrayList<Tile> path = new ArrayList<>();
+        path = new ArrayList<>();
 
         startTile = this.board[0][randomRange(dimension-1)];
         startTile.setStart(true);
@@ -32,33 +33,9 @@ public class Board extends JPanel {
 
         for (Tile tile : path) {
             tile.removeNoPlayable();
-            tile.setBackground(Color.green);
-            tile.printNeighbour2();
-            System.out.println("------- " + tile.getTileType());
         }
-
-//        this.setValue(path);
-
     }
-//    private void setValue(ArrayList<Tile> path) {
-//        for (Tile tile : path) {
-//            int x = tile.getX();
-//            int y = tile.getY();
-//
-//            for (Tile neighbour : tile.getAllNeighbour()) {
-//                int dx = neighbour.getX() - x;
-//                int dy = neighbour.getY() - y;
-//
-//                if (neighbour.getTileType() == 0) {
-//                    if ((dx == 0 && Math.abs(dy) == 1) || (dy == 0 && Math.abs(dx) == 1)) {
-//                        neighbour.setTileType(2);
-//                    } else if ((dx == 0 && Math.abs(dy) == 2) || (dy == 0 && Math.abs(dx) == 2)) {
-//                        neighbour.setTileType(1);
-//                    }
-//                }
-//            }
-//        }
-//    }
+
     private void dfsRandom(Tile start, Tile finish, ArrayList<Tile> path) {
         HashSet<Tile> visited = new HashSet<>();
 
@@ -77,30 +54,15 @@ public class Board extends JPanel {
             Collections.shuffle(neighbors);
             for (Tile neighbor : neighbors) {
                 if (!visited.contains(neighbor)) {
-                    current.setBackground(Color.red);
                     neighbor.setPrevious(current);
                     stack.push(neighbor);
                 }
             }
         }
-
-        // Construct the path from end to start
         Tile current = finish;
         do {
             current.setPlayable(true);
             path.add(current);
-//            current.connectWith(current.getPrevious());
-////            current.removeNoConnected();
-//            current.setPlayable(true);
-////            System.out.println(current.getNeighbours());
-//            current.printNeighbour();
-//           current.printNeighbour2();
-//            current.setTileTypeBasedOnConnections();
-//            current.removeNoConnected();
-//            System.out.println(current.getTileType());
-//
-//            System.out.println(current.getDirectionOne()+" " +current.getDirectionTwo());
-////            current.setTileOrientation(randomRange(3));
             this.updateTile(current);
             current = current.getPrevious();
 
@@ -110,31 +72,10 @@ public class Board extends JPanel {
 
     private void updateTile(Tile tile) {
         tile.connectWith(tile.getPrevious());
-//            current.removeNoConnected();
-//        tileI.setPlayable(true);
-//            System.out.println(current.getNeighbours());
-        tile.printNeighbour();
-//        tileI.printNeighbour2();
+        tile.setNeighbourConnection();
         tile.setTileTypeBasedOnConnections();
-
-
         tile.pairDirectionAndTubes();
-        System.out.println(tile.getTileType());
-
-        System.out.println(tile.getDirectionOne()+" " + tile.getDirectionTwo());
-//            tile.multipleRotate(randomRange(3));
-
-    }
-
-    public String getPathString(ArrayList<Tile> path) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Path: ");
-        for (Tile tile : path) {
-            sb.append(tile.toString());
-            sb.append(" -> ");
-        }
-        sb.delete(sb.length() - 4, sb.length());
-        return sb.toString();
+        tile.multipleRotate(randomRange(3));
     }
 
     private void initializeBoard(int dimension) {
@@ -165,10 +106,16 @@ public class Board extends JPanel {
         }
     }
 
+    public void resetValidation() {
+        for (Tile tile : path) {
+            tile.resetConnections();
+            tile.setHighlight(false);
+        }
+    }
+
     private int randomRange(int end) {
         int start = 0;
         Random random = new Random();
-        int number = random.nextInt((end - start) + 1) + start;
-        return number;
+        return random.nextInt((end - start) + 1) + start;
     }
 }
